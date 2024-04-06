@@ -29,7 +29,7 @@ const Billboard: React.FC <BillBoardProps> = ({
       <video 
         poster={randomMovies?.thumbnailUrl} 
         className="w-full h-[56.25vw] object-cover brightness-[60%] transition duration-500" 
-        autoPlay loop 
+        autoPlay loop muted
         src={randomMovies?.videoUrl}
       ></video>
       <div 
