@@ -23,14 +23,25 @@ const AuthClientPage = () => {
 
   const login = useCallback(async () => {
     try {
-      await signIn('credentials', {
+      const response = await signIn('credentials', {
         email,
         password,
         redirect: false,
         callbackUrl: '/'
       });
 
-      router.push('/profiles');
+      if(response?.ok){
+        router.push('/profiles');
+        console.log('yes')
+      }
+
+      if(response?.error){
+        console.log('no')
+      }
+
+      console.log('response : ', response)
+
+     
     } catch (error) {
       console.log(error);
     }

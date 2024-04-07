@@ -1,5 +1,6 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { getServerSession } from "next-auth"
+import prismadb from '@/libs/prismadb'
 
 
 export const getSession  = async () => {
@@ -9,12 +10,27 @@ export const getSession  = async () => {
 export const getCurrentUser = async () => {
     try {
         const session = await getSession();
-
-        if(!session){
+        console.log('session: ', session)
+        if(!session?.user?.email){
             return null;
         }
 
-        return {session}
+        const currentUser = await prismadb.user.findUnique({
+            where: {
+              email: session.user.email as string,
+            }
+          });
+
+          if(!currentUser){
+            return null
+          }
+
+          return {
+            ...currentUser,
+            createdAt: currentUser.createdAt.toISOString(),
+            updatedAt: currentUser.updatedAt.toISOString(),
+            emailVerified: currentUser.emailVerified?.toISOString() || null,
+          };
     } catch (error) {
         return null;
     }

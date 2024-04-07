@@ -1,4 +1,4 @@
-import { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
@@ -45,6 +45,7 @@ export const authOptions: AuthOptions = {
               const isCorrectPassword = await compare(credentials.password, user.hashedPassword);
       
               if (!isCorrectPassword) {
+                console.log('incorrect password')
                 throw new Error('Incorrect password');
               }
       
@@ -57,9 +58,11 @@ export const authOptions: AuthOptions = {
     },
     debug: process.env.NODE_ENV === 'development',
     adapter: PrismaAdapter(prismadb),
-    jwt: {
-        secret: process.env.NEXTAUTH_JWT_SECRET
-    },
+    session: {
+      strategy: 'jwt'
+  },
     secret: process.env.NEXTAUTH_SECRET
     
 }
+
+export default NextAuth(authOptions)
